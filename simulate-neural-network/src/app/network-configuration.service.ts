@@ -10,6 +10,7 @@ import { Connection } from "./connection";
  * Constants used in defining how the network operates
  */
 export class NetworkConfigurationService {
+  callstack: number = 0;
   private neuronsArray: Array<Neuron> = new Array<Neuron>(); //neurons in Neural Network
   private connectionsArray: Array<Connection> = new Array<Connection>(); //connections in Neural Network
 	private neuronStimulationSubject$ = new BehaviorSubject<Connection>(new Connection(-1, new Neuron(-1), new Neuron(-1),  0));
@@ -59,6 +60,22 @@ export class NetworkConfigurationService {
   }
 
   fireNeuron(neuronId: number) {
+    this.callstack++;
+
+    if (this.callstack > 1000) {
+      //Use setTimeout to generate new call stack and prevent maximum call stack exceeded error
+      setTimeout(() => {
+        this.callstack = 0;
+        this.stimulateConnection(neuronId);
+      }, 0)
+    }
+    else {
+      this.callstack++;
+      this.stimulateConnection(neuronId);
+    }
+  }
+
+  stimulateConnection(neuronId: number) {
     this.connectionsArray
       .filter((connection) => connection.inputNeuron.id === neuronId)
       .forEach((connection) => {

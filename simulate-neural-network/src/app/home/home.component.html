@@ -1,3 +1,21 @@
 <div>
   <h1>Welcome to Simulating a Neural Network</h1>
 </div>
+<label>Neurons In Network   </label>
+<input [(ngModel)]="neuronCount"
+  [ngStyle]="{
+    'background-color': 'green',
+    'color': 'white'
+  }"/>
+<button (click)="createNetwork()">Create Network</button>
+<button (click)="stimulateBaseNeuron()">Stimulate First Neuron</button>
+<label>Time to Transverse Network</label>
+<input [(ngModel)]="totalTime"
+  [ngStyle]="{
+    'background-color': 'green',
+    'color': 'white'
+  }"/>
+<input [(ngModel)]="finalNeuronStimulated"/>
+<div *ngFor="let neuron of neurons">
+  <neuron [neuron]="neuron"></neuron>
+</div>
