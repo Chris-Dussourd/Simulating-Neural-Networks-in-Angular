@@ -1,0 +1,17 @@
+Neuron In Series Performance Testing:
+
+One Behavior Subject. Neuron subscribes, receives connection, and checks if it is an output neuron of connection.
+10,000 - 1 second
+15,000 - 3 seconds
+20,000 - 6 seconds
+30,000 - 11 seconds
+40,000 - 25 seconds
+100,000 > 2 minutes
+
+
+One Behavior Subject for every neuron - emits when neuron is firing. 
+Two behavior subjects that emit when neuron is created and when connection is created/destroyed
+3,000 - 4 seconds
+4,000 - 9 seconds
+5,000 - 18 seconds
+

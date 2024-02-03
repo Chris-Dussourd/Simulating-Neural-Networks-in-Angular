@@ -17,6 +17,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   connections: Array<Connection> = [];
   loaded: boolean = false;
 	stimulationSubscription: Subscription;
+  neuronCreatedSubscription: Subscription;
+  networkCreated: boolean;
   finalNeuronStimulated: boolean;
   constructor(public networkConfig: NetworkConfigurationService) {
   }
@@ -26,23 +28,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loaded = true;
     this.totalTime = 0;
 
-    //Subscribe to last neuron in network
-		this.stimulationSubscription = this.networkConfig.neuronStimulation$.subscribe((connection: Connection) => {
-      if (connection.outputNeuron.id === +this.neuronCount) {
-        clearInterval(this.intervalId);
-        this.finalNeuronStimulated = true;
-      }
-    });
+    this.neuronCreatedSubscription = this.networkConfig.neuronCreated$
+      .subscribe((id: number) => {
+        if (id > 0) {
+          this.connections.push(this.networkConfig.addConnection(id, this.neurons[id-1], this.neurons[id], 1));
+        }
+        if (id === +this.neuronCount) {
+          this.networkCreated = true;
+          this.finalNeuronStimulated = false;
+        }
+      })
   }
 
   createNetwork() {
+    this.networkCreated = false;
     this.networkConfig.clearNetwork();
     this.neurons.push(this.networkConfig.addNeuron(0)); //base neuron
     //Create Network in Series for now
     for(let num=1; num<=+this.neuronCount; num++) {
       this.neurons.push(this.networkConfig.addNeuron(num));
-      this.connections.push(this.networkConfig.addConnection(num, this.neurons[num-1], this.neurons[num], 1));
     }
+    //Subscribe to last neuron in network
+		this.stimulationSubscription = this.networkConfig.getNeuronObservable$(+this.neuronCount)
+      .subscribe((val: number) => {
+        clearInterval(this.intervalId);
+        this.finalNeuronStimulated = true;
+    });
   }
 
   stimulateBaseNeuron() {

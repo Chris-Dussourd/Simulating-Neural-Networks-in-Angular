@@ -15,6 +15,7 @@
     'background-color': 'green',
     'color': 'white'
   }"/>
+<input [(ngModel)]="networkCreated"/>
 <input [(ngModel)]="finalNeuronStimulated"/>
 <div *ngFor="let neuron of neurons">
   <neuron [neuron]="neuron"></neuron>
